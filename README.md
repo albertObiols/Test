@@ -5,3 +5,5 @@
 
 ###2.1 Git Status
 `git status`
+
+2 + 2 = 4
