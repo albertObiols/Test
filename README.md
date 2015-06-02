@@ -8,12 +8,15 @@
 >git add .
 >git add file
 
-##4. Commit 
->
->
+##4. Commit
+>git commit -a -m "message"
+
+##5. Diff
+>git diff
 
 
 ## Git Shell
 ~modified files
 
 >[master +0 ~1 -0]
+
