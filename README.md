@@ -1,5 +1,5 @@
 # GitHub tutorial
-##1. Basic concepts
+##1. Basic concepts []
 
 ##2. Commands
 
@@ -7,3 +7,4 @@
 `git status`
 
 1 + 1 = 2
+
