@@ -14,9 +14,11 @@
 ##5. Diff
 >git diff
 
-
+dwed
 ## Git Shell
 ~modified files
 
 >[master +0 ~1 -0]
+
+test checkout
 
