@@ -1,5 +1,7 @@
 # GitHub tutorial
-##1. Create a repository at GitHub
+##1. Basic concepts
 
-##2. Clone
-dwedw
+##2. Commands
+
+###2.1 Git Status
+`git status`
