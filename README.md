@@ -1,5 +1,5 @@
 # GitHub tutorial
-##1. Basic concepts
+##1. Basic concepts []
 
 ##2. Commands
 
