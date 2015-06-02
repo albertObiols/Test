@@ -1,12 +1,10 @@
 # GitHub tutorial
-##1. Basic concepts []
+##1. Basic concepts
 
 ##2. Commands
 
 ###2.1 Git Status
 `git status`
-
-2 + 2 = 4
 
 1 + 1 = 2
 
