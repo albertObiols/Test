@@ -7,3 +7,5 @@
 `git status`
 
 caca
+
+COMMIT
