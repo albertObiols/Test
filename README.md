@@ -4,8 +4,4 @@
 ##2. Commands
 
 ###2.1 Git Status
-`git status`
 
-caca
-
-COMMIT
