@@ -96,7 +96,7 @@ __________________
 
 #HADOOP
 
-##1. Instroducció
+##1. Introducció
 Dissenyat per Google per poder donar resposta a l'alta demanda de requeriments del seu motor de cerca.
 
 ##2. Característiques
