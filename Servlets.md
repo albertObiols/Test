@@ -1,7 +1,7 @@
 ## 1. Java Servlets
 Características de un JAVA SERVLET:
 
-- Corre dentro de un Servlet Container (Servidor WEB: Apache.. ).
+- Corre dentro de un **Servlet Container** (Servidor WEB: Apache.. ).
 - Es un objeto de JAVA que responde a peticiones HTTP.
 	- 	Request -> Response
 - Es solo una parte de una web-application
@@ -10,6 +10,9 @@ Características de un JAVA SERVLET:
 	- JSP
 	- JSF
 	- Web Services
+![alt text][logo]
+[logo]: http://tutorials.jenkov.com/images/java-servlets/overview-2.png
+
 
 ### HTTP Request and Response
 
@@ -19,7 +22,18 @@ Características de un JAVA SERVLET:
 4. El Servlet Container busca el Servlet al que pertenece y lo activa con **Servlet.service()**
 5. El Servlet una vez activado procesa la request y genera una response que es enviada de vuelta al navegador.
 
+![alt text][logo2]
+[logo2]:http://tutorials.jenkov.com/images/java-servlets/overview.png
+
 ### Servlet Containers
+Es una parte de un servidor de web(o aplicaciones) que:
+- Contiene y gestiona el ciclo de vida de los **Servlets**.
+- Decodifica peticiones y formatea respuestas.
+- Ofrece servicios de red sobre los cuales se envían peticiones y respuestas.
+- Puede fijar restricciones de seguridad entorno los servlets que se ejecutan. (Ej: nº de threads máx.)
+
+Todo servlet container debe soportar como mínimo **HTTP 1.0** aunque puede soportar opcionalmente protocolos adicionales.
+
 Se ejecutan normalmente dentro de Java Web Servers como:
 - Jetty
 - TomCat
@@ -31,6 +45,9 @@ La ejecución de un servlet esta gestionada por el Servlet Container:
 3. Se llama al método **init()**
 4. Se llama al método **service()**
 5. Se llama al método **destroy()**
+
+![alt text][logo3]
+[logo3]:http://tutorials.jenkov.com/images/java-servlets/life-cycle.png
 
 Los 3 primeros pasos solo se ejecutan una vez, ya que los servlets estan desactivados por defecto hasta reciben la primera request.
 El 4 se hace por cada request recibida
@@ -360,3 +377,46 @@ Y así es como accederíamos desde nuestro servlet:
 ```java
 String myContextParam = request.getSession().getServletContext().getInitParameter("myParam");
 ```
+
+##14. Servlet Concurrency
+Un **Servlet Container/WebServer** és por defecto multithread. Esto significa que múltiples requests al mismo servlet podrian ser ejecutadas al mismo tiempo. Así pues deberemos tenerlo en cuenta en el momento de implementar nuestro servlet.
+
+Para asegurarnos que nuestro servlet es **thread-safe** debemos seguir estas reglas:
+1. En el **service()**, no acceder a variables de clase a no ser que sean **thread-safe**.
+2. En el **service()**, no reassignar variables de clase. En caso de que lo necesitemos hacerlo dentro de un bloque **synchronize**.
+3. Aplicar la regla **1** y **2** para las variables **estáticas**.
+4. Las variables locales siempre son thread-safe. Aunque quiza el objecto al que apunta una variable local puede que no lo sea. Si un objeto es instanciado dentro del método, y nunca escapa entonces no habrá problema. Por otro lado si una variable local apunta a un objeto compartido podría seguir causando problemas. El hecho de assignar un objeto compartido a una variable local no hace convierte el objeto en **thread-safe**.
+
+Los objetos **request** y **response** son **thread-safe** ya que se crea una nueva instancia de estos por cada petición o thread ejecutado en nuestro servlet.
+
+En la siguiente imagen se muestra en una caja roja, las variables que tendremos que tener cuidado al trabajar con ellas.
+
+![alt text][logo4]
+[logo4]:http://tutorials.jenkov.com/images/java-servlets/servlet-concurrency.png
+
+##Other Shared Resources
+Por supuesto no solo las variables **estáticas** y de **clase** dentro de la clase servlet hemos de tener en cuenta. Sino que también las variables estáticas y de clase de otras clases deben ser **thread-safe**.
+
+##Code Example
+```java
+public class SimpleHttpServlet extends HttpServlet {
+  // Not thread safe, static.
+  protected static List list = new ArrayList();
+  // Not thread safe
+  protected Map map = new HashMap();
+  // Thread safe to access object, not thread safe to reassign variable.
+  protected Map map = new ConcurrentHashMap();
+  // Thread safe to access object (immutable), not thread safe to reassign variable.
+  protected String aString = "a string value";
+
+  protected void doGet( HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    // Not thread safe, unless the singleton is 100% thread safe.
+    SomeClass.getSomeStaticSingleton();
+    // Thread safe, locally instantiated, and never escapes method.
+    Set set = new HashSet();
+  }
+}
+```
+
+
