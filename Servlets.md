@@ -139,7 +139,7 @@ Juntamente con la petición nos pueden llegar una serie de parámetros enviados 
 - HTTP POST request: los parámetros estan incluidos en el cuerpo de la petición HTTP.
 - HTTP GET request: los parámetros están incluidos en la query string de la URL.
 
-Ejemplo:
+Ejemplo GET:
 
 `http://jenkov.com/somePage.html?param1=hello&param2=world`
 
@@ -161,7 +161,21 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
 
 }
 ```
-Usaremos el mismo código java en caso de que los parámetros nos lleguen por el 'body' de la petición HTTP.
+Usaremos el mismo código java en caso de que los parámetros nos lleguen por el 'body' de la petición HTTP. (POST)
+
+Podemos usar métodos como:
+`String getParameter(String name)`: retorna el valor del parámetro cuyo nombre es name.
+`Map getParameterMap()`: retorna una tabla hash con todos los parámetros de la petición.
+`Enumeration getParameterNames()`: retorna una enumeration de objetos String conteniendo los nombres de los parámetros de la petición.
+`String[] getParameterValues(String name)`: retorna un array de Strings con los valores del parámetro name.
+
+###Attributes
+Los atributos permite la comunicación entre servlets que se pasen una misma petición o entre filtros y servlets.
+
+`Object getAttribute(String name)`: retorna el valor de un atributo name.
+`Enumeration getAttributeNames()`: retorna una Enumeration con los nombres en formato String de todos los atributos de la petición.
+`void removeAttribute(String name)`: Elimina el atributo name de la petición.
+`void setAttribute(String name, Object o)`: Fija el valor del atributo name al objeto o.
 
 ###Headers
 Las cabeceras de la request son pares de valores enviados por el navegador juntamente con la petición HTTP, que contienen información relativa a el tipo de navegador, que tipo de ficheros se pueden recibir y metadatos de la petición.
@@ -171,6 +185,9 @@ Para acceder a esta información (ejemplo):
 String contentLength = request.getHeader("Content-Length");
 ```
 Donde la cabecera Content-Length contiene el numero de bytes enviados en el cuerpo de la petición HTTP.
+
+Otros métodos:
+
 
 ###InputStream
 Cuando recibimos una petición HTTP por POST, la información recibida en el cuerpo no tiene por ser siempre parámetros, puede ser cualquier tipo de información como un fichero...
@@ -264,12 +281,12 @@ Y recuperarlos posteriormente:
 ```java
 String userName = (String) session.getAttribute("userName");
 ```
+Las sesiones existen a nivel de aplicación web, y se comparten entre los diferentes servlets de una misma aplicación.
 
 ##8. RequestDispatcher
 Es una clase que permite llamar a otros servlets o jsp. Para obtenerlo:
 ```java
-protected void doPost(HttpServletRequest request,
-                      HttpServletResponse response)
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
 
   RequestDispatcher requestDispatcher = request.getRequestDispatcher("/anotherURL.simple");
@@ -377,6 +394,61 @@ Y así es como accederíamos desde nuestro servlet:
 ```java
 String myContextParam = request.getSession().getServletContext().getInitParameter("myParam");
 ```
+
+
+
+##13. Cookies
+Las **cookies** HTTP són pequeñas piezas de datos(hasta 4kB) que la aplicación web puede almacenar en la máquina cliente de los usuarios que visitan nuestra aplicación.
+
+###Java Cookie Example
+Podemos escribir cookies usando el objeto **HttpResponse**:
+```java
+Cookie cookie = new Cookie("myCookie", "myCookieValue");
+response.addCookie(cookie);
+```
+Como podemos ver hemos creado una cookie con el identificador *myCookie* y con el valor *myCookieValue*. Podemos crear tantas cookies como queramos, parecido a una *Hashtable*.
+Cuando el navegador accede a nuestra aplicación web, este le entrega las cookies almacenadas en la máquina cliente a la aplicación web. Pero únicamente las cookies pertenecientes a esa aplicación.
+
+###Reading Cookies Sent From the Browser
+Podemos leer las cookies mediante el objeto **HttpRequest** y luego iterando:
+```java
+Cookie[] cookies = request.getCookies();
+String userId = null;
+for(Cookie cookie : cookies){
+    if("uid".equals(cookie.getName())){
+        userId = cookie.getValue();
+    }
+}
+```
+También podemos hacer uso de una **hashmap**:
+```java
+Map cookieMap = new HashMap();
+Cookie[] cookies = request.getCookies();
+
+for(Cookie cookie : cookies){
+    cookieMap.put(cookie.getName(), cookie);
+}
+```
+Y luego podriamos acceder mediante **cookieMap.get("cookieName")**
+
+###Cookie Expiration
+Una opción importante és el tiempo de caducidad de la cookie. Este tiempo le dice al navegador hasta cuando ha de mantener la cookie. Esto se hace mediante el método **setMaxAge()**:
+```java
+Cookie cookie = new Cookie("uid", "123");
+cookie.setMaxAge(24 * 60 * 60);  // 24 hours.
+response.addCookie(cookie);
+```
+
+###Removing Cookies
+A veces es necesario eliminar una cookie. Para hacerlo solo tenemos que configurar el tiempo de expiración a 0 si queremos eliminarla de immediato, o bien a -1 si queremos que se elimine en el momento que el cliente cierre el navegador.
+```java
+Cookie cookie = new Cookie("uid", "");
+cookie.setMaxAge(0);
+response.addCookie(cookie);
+```
+
+###Cookie Cases
+Las cookies normalmente son usadas para guardar información específica que no queremos que ocupen espacio en la parte del servidor, como puede ser una sesión anónima ...
 
 ##14. Servlet Concurrency
 Un **Servlet Container/WebServer** és por defecto multithread. Esto significa que múltiples requests al mismo servlet podrian ser ejecutadas al mismo tiempo. Así pues deberemos tenerlo en cuenta en el momento de implementar nuestro servlet.
