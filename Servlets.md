@@ -112,15 +112,13 @@ Si queremos tratar peticiones GET o POST haremos override y haremos que una llam
 
 ```java
 public class SimpleHttpServlet extends HttpServlet {
-  protected void doGet( HttpServletRequest request,
-                        HttpServletResponse response)
+  protected void doGet( HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
 
       doPost(request, response);
   }
 
-  protected void doPost( HttpServletRequest request,
-                         HttpServletResponse response)
+  protected void doPost( HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
 
       response.getWriter().write("GET/POST response");
@@ -282,6 +280,15 @@ Y recuperarlos posteriormente:
 String userName = (String) session.getAttribute("userName");
 ```
 Las sesiones existen a nivel de aplicación web, y se comparten entre los diferentes servlets de una misma aplicación.
+
+Métodos:
+`Object getAttribute(String name)`: retorna el valor del atributo de nombre name.
+
+`Enumeration getAttributeNames()`: retorna una enumeración con los nombres de todos los atributos.
+
+`void setAttribute(String name, Object value)`: fija el valor del atributo de nombre name asignandole value.
+
+`void removeAttribute(String name)`: elimina el atributo de nombre name.
 
 ##8. RequestDispatcher
 Es una clase que permite llamar a otros servlets o jsp. Para obtenerlo:
@@ -459,7 +466,7 @@ Para asegurarnos que nuestro servlet es **thread-safe** debemos seguir estas reg
 3. Aplicar la regla **1** y **2** para las variables **estáticas**.
 4. Las variables locales siempre son thread-safe. Aunque quiza el objecto al que apunta una variable local puede que no lo sea. Si un objeto es instanciado dentro del método, y nunca escapa entonces no habrá problema. Por otro lado si una variable local apunta a un objeto compartido podría seguir causando problemas. El hecho de assignar un objeto compartido a una variable local no hace convierte el objeto en **thread-safe**.
 
-Los objetos **request** y **response** son **thread-safe** ya que se crea una nueva instancia de estos por cada petición o thread ejecutado en nuestro servlet.
+Los objetos **request** y **response** so	n **thread-safe** ya que se crea una nueva instancia de estos por cada petición o thread ejecutado en nuestro servlet.
 
 En la siguiente imagen se muestra en una caja roja, las variables que tendremos que tener cuidado al trabajar con ellas.
 
@@ -490,5 +497,63 @@ public class SimpleHttpServlet extends HttpServlet {
   }
 }
 ```
+
+##15.Web Applications
+Una **aplicación web** és una colección de servlets, páginas HTML, clases y otros recursos que comprenden una aplicación completa dentro de un servidor web.
+Una aplicación web tiene una ruta específica dentro de un servidor web. Ejemplo:
+>http://www.miempresa.com/catalog
+
+##Elements
+- Servlets.
+- Páginas JSP.
+- Clases Java de utilidad.
+- Documentos estáticos (html, imagenes, sonidos, etc).
+- Applets, beans y clases de la parte de la aplicación.
+- Información descriptiva que enlaza los elementos anteriores.
+
+##Folder Structure
+- Una **aplicación web** existe como una estructura jerárquica de directorios.
+- Una aplicación enraizada en el servidor en **/catalog**, el fichero index.html que se encuentre en la raiz del sistema de directorios de la aplicación web será retornado cuando el usuario solicite **/catalog/index.html**.
+- Existe un directorio especial dentro de la jerarquía llamado **WEB-INF**. Este directorio no es visible desde el exterior, pero si para los servlets de la aplicación usando **getResource**. Los contenidos de WEB-INF son:
+	- **/WEB-INF/web.xml**: és el descriptor de despliegue. Explica al servlet container lo que contiene la aplicación.
+	- **/WEB-INF/classes/**: és el directorio donde se encuentran los .class de los servlets y el resto de clases Java que utilize la aplicación.
+	- **/WEB-INF/lib/*.jar**: és el área predefinida para los archivos Java Archive.
+- Las aplicaciones web se empaquetan en archivos **.war** (web archive).
+Ejemplo:
+>/index.html
+>/howto.jsp
+>/images/banner.gif
+>/WEB-INF/web.xml
+>/WEB-INF/lib/jspbean.jar
+>/WEB-INF/classes/com/miempresa/servlets/MiServlet.class
+>/WEB-INF/classes/com/miempresa/util/MiClaseUtilidad.class
+
+##Deploy Descriptor (web.xml)
+Incluye información relativa a:
+- Datos generales de la aplicación web.
+- Parámetros de inicialización de la aplicación web.
+- Configuración de la gesyión de sesiones (timeout).
+- Declaración de servlets.
+- Mapeos de servlets.
+- ...
+
+És el fichero web.xml que hemos explicado en el apartado 10.
+
+##Servlet Mapping. Matching.
+Tipos de matching:
+- Matching de prefijos
+- Matching exacto
+- Matching de extensión
+- Matching para definir un servlet por defecto
+
+Algoritmo de mapeo:
+1. Si existe un matching exacto entre el path solicitado y el servlet, se envia la petición al servlet.
+2. Se intenta encontrar de forma recursiva, el mayor prefijo que haga matching y se envia la petición al servlet.
+3. Si el último segmento del URL contiene una extensión, se busca un servlet que gestione esa extensión.
+4. Si se ha definido, se envía la petición al servlet por defecto.
+
+
+
+
 
 
