@@ -161,18 +161,21 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
 Usaremos el mismo código java en caso de que los parámetros nos lleguen por el 'body' de la petición HTTP. (POST)
 
 Podemos usar métodos como:
-`String getParameter(String name)`: retorna el valor del parámetro cuyo nombre es name.
-`Map getParameterMap()`: retorna una tabla hash con todos los parámetros de la petición.
-`Enumeration getParameterNames()`: retorna una enumeration de objetos String conteniendo los nombres de los parámetros de la petición.
-`String[] getParameterValues(String name)`: retorna un array de Strings con los valores del parámetro name.
-
+```java
+String getParameter(String name) // retorna el valor del parámetro cuyo nombre es name.
+Map getParameterMap() // retorna una tabla hash con todos los parámetros de la petición.
+Enumeration getParameterNames() // retorna una enumeration de objetos String conteniendo los nombres de los parámetros de la petición.
+String[] getParameterValues(String name) // retorna un array de Strings con los valores del parámetro name.
+```
 ###Attributes
-Los atributos permite la comunicación entre servlets que se pasen una misma petición o entre filtros y servlets.
+Los atributos permiten la comunicación entre servlets que se pasen una misma petición o entre filtros y servlets.
 
-`Object getAttribute(String name)`: retorna el valor de un atributo name.
-`Enumeration getAttributeNames()`: retorna una Enumeration con los nombres en formato String de todos los atributos de la petición.
-`void removeAttribute(String name)`: Elimina el atributo name de la petición.
-`void setAttribute(String name, Object o)`: Fija el valor del atributo name al objeto o.
+```java
+Object getAttribute(String name) // retorna el valor de un atributo name.
+Enumeration getAttributeNames() // retorna una Enumeration con los nombres en formato String de todos los atributos de la petición.
+void removeAttribute(String name) // Elimina el atributo name de la petición.
+void setAttribute(String name, Object o) // Fija el valor del atributo name al objeto o.
+```
 
 ###Headers
 Las cabeceras de la request son pares de valores enviados por el navegador juntamente con la petición HTTP, que contienen información relativa a el tipo de navegador, que tipo de ficheros se pueden recibir y metadatos de la petición.
@@ -183,12 +186,20 @@ String contentLength = request.getHeader("Content-Length");
 ```
 Donde la cabecera Content-Length contiene el numero de bytes enviados en el cuerpo de la petición HTTP.
 
-Otros métodos:
+Métodos:
 ```java
 String getHeader(String name)// retorna el valor de la primera cabecera de la petición con el nombre name.
 Enumeration getHeaderNames()// retorna los nombres de todas las cabeceras de la petición.
 Enumeration getHeaders(String name)// retorna todas las cabeceras de la petición con nombre name.
+```
 
+###Paths
+Métodos:
+```java
+String getRequestURI() // retorna la parte del URL de la petición, que va desde el nombre del servidor hasta el interrogante o hasta el final si este no aparece.
+String getContextPath() // retorna el fragmento de URL que indica el contexto de la petición.
+String getServletPath() // retorna el fragmento de URL que permite seleccionar el servlet.
+String getPathInfo() // retorna el resto del RequestURI (no ContextPath ni ServletPath).
 ```
 
 ###InputStream
@@ -262,10 +273,28 @@ También podemos redirigir a otra URL desde nuestro Servlet, aunque en este caso
 ```java
 response.sendRedirect("http://jenkov.com");
 ```
+###Closing the response object
+El objeto respuesta se cierra cuando se da una de las siguientes condiciones:
+- Finaliza el métode **service()**
+- Se había fijado el tamaño máximo de la respuesta (vía setContentLength()) y ya se ha escrito esa cantidad de datos.
+- Se llama a **sendError()**
+- Se llama a **sendRedirect()**
+El objeto respuesta no se puede usar después de que se haya cerrado.
+
 Métodos:
 ```java
-
+//ENVIANDO INFORMACION TEXTO O BINARIO
+ServletOutputStream getOutputStream() throws IOException // retorna un ServletOutputStream, adecuado para el envío de datos binarios en la respuesta.
+PrintWriter getWriter() throws IOException // retorna un PrintWriter que permite enviar informacion textual al cliente.
+//FIJANDO CABECERAS
+void addHeader(String name, String value) // añade value al conjunto de valores de la cabecera name.
+void setHeader(String name, String value) // fija a value el valor de la cabecera name.
+//RETORNANDO DIRECCIONES O ERRORES
+void sendError(int sc) throws IOException // envía una respuesta de error al cliente usando el código de estado especificado.
+void sendError(int sc, String msg) throws IOException // envía una respuesta de error en forma de página HTML conteniendo el texto que incluya la variable msg.
+void sendRedirect(String location) throws IOException // envía una respuesta de redirección temporal al cliente utilizando location como URL.
 ```
+
 ##7. HttpSession
 El objeto HttpSession representa la sesión de un usuario. Esta sesión contiene información de este a lo largo de sus múltiples peticiones HTTP.
 Cuando un usuario entra por primera vez en nuestra aplicación web, se le da un identificador único de sesión. Esta ID normalmente se guarda como Cookie o un parametro de request.
