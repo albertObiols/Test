@@ -185,7 +185,12 @@ String contentLength = request.getHeader("Content-Length");
 Donde la cabecera Content-Length contiene el numero de bytes enviados en el cuerpo de la petición HTTP.
 
 Otros métodos:
+```java
+String getHeader(String name)// retorna el valor de la primera cabecera de la petición con el nombre name.
+Enumeration getHeaderNames()// retorna los nombres de todas las cabeceras de la petición.
+Enumeration getHeaders(String name)// retorna todas las cabeceras de la petición con nombre name.
 
+```
 
 ###InputStream
 Cuando recibimos una petición HTTP por POST, la información recibida en el cuerpo no tiene por ser siempre parámetros, puede ser cualquier tipo de información como un fichero...
@@ -207,7 +212,7 @@ Contiene metadatos relacionados con la aplicación web. Por ejemplo los valores 
 ServletContext context = request.getSession().getServletContext();
 ```
 
-##6. HttpResponse
+##6. HttpResponse(Respuesta)
 El objeto HttpResponse representa la respuesta que nuestra aplicación web devuelve al navegador, en respuesta de la pretición HTTP recibida préviamente.
 
 ###Writing HTML
@@ -258,7 +263,10 @@ También podemos redirigir a otra URL desde nuestro Servlet, aunque en este caso
 ```java
 response.sendRedirect("http://jenkov.com");
 ```
+Métodos:
+```java
 
+```
 ##7. HttpSession
 El objeto HttpSession representa la sesión de un usuario. Esta sesión contiene información de este a lo largo de sus múltiples peticiones HTTP.
 Cuando un usuario entra por primera vez en nuestra aplicación web, se le da un identificador único de sesión. Esta ID normalmente se guarda como Cookie o un parametro de request.
