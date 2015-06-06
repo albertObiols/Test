@@ -89,8 +89,7 @@ Por ejemplo, para generar una response a HTTP GET deberemos extender de la clase
 
 ```JAVA
 public class SimpleHttpServlet extends HttpServlet {
-  protected void doGet( HttpServletRequest request,
-                        HttpServletResponse response)
+  protected void doGet( HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
 
       response.getWriter().write("<html><body>GET response</body></html>");
