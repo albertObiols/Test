@@ -280,10 +280,16 @@ Las sesiones existen a nivel de aplicación web, y se comparten entre los difere
 
 Métodos:
 ```java
+//OBTENER SESIÓN
+httpSession getSession()// retorna la sesión asociada con la petición. Si no existe, crea una.
+httpSession getSession(boolean create)// retorna la sesión asociada con la petición. Si no existe, y create es cierto, crea una.
+//ATRIBUTOS DE SESIÓN
 Object getAttribute(String name)// retorna el valor del atributo de nombre name.
 Enumeration getAttributeNames()// retorna una enumeración con los nombres de todos los atributos.
 void setAttribute(String name, Object value)// fija el valor del atributo de nombre name asignandole value.
 void removeAttribute(String name)// elimina el atributo de nombre name.
+//FINALIZAR SESIÓN
+void setMaxInactiveInterval(int interval)// especifica el tiempo en segundos entre peticiones de un mismo cliente antes de que el contenedor de servlets invalide la sesión.
 ```
 
 ##8. RequestDispatcher
