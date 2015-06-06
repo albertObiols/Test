@@ -264,10 +264,7 @@ El objeto HttpSession representa la sesión de un usuario. Esta sesión contiene
 Cuando un usuario entra por primera vez en nuestra aplicación web, se le da un identificador único de sesión. Esta ID normalmente se guarda como Cookie o un parametro de request.
 Así es como accedemos al objeto de sesion:
 ```java
-protected void doPost(HttpServletRequest request,
-    HttpServletResponse response)
-        throws ServletException, IOException {
-
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HttpSession session = request.getSession();
 }
 ```
@@ -282,13 +279,12 @@ String userName = (String) session.getAttribute("userName");
 Las sesiones existen a nivel de aplicación web, y se comparten entre los diferentes servlets de una misma aplicación.
 
 Métodos:
-`Object getAttribute(String name)`: retorna el valor del atributo de nombre name.
-
-`Enumeration getAttributeNames()`: retorna una enumeración con los nombres de todos los atributos.
-
-`void setAttribute(String name, Object value)`: fija el valor del atributo de nombre name asignandole value.
-
-`void removeAttribute(String name)`: elimina el atributo de nombre name.
+```java
+Object getAttribute(String name)// retorna el valor del atributo de nombre name.
+Enumeration getAttributeNames()// retorna una enumeración con los nombres de todos los atributos.
+void setAttribute(String name, Object value)// fija el valor del atributo de nombre name asignandole value.
+void removeAttribute(String name)// elimina el atributo de nombre name.
+```
 
 ##8. RequestDispatcher
 Es una clase que permite llamar a otros servlets o jsp. Para obtenerlo:
