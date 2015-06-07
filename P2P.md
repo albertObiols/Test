@@ -196,8 +196,8 @@ Quan una aplicació vol llegir el fitxer **bar.txt** es comunica amb el NameNode
 
 ###7.1 Com funciona?
 - Distribueix les tasques entre els diferents nodes.
-- **Map: ** processarem les dades i realitzarem operacions costoses.
-- **Reduce: ** ajuntarem la sortida i realitzarem operacions trivials.
+- **Map:** processarem les dades i realitzarem operacions costoses.
+- **Reduce:** ajuntarem la sortida i realitzarem operacions trivials.
 
 ###7.2 Característiques
 - Paral·lelització contínua i distribució automàtica.
@@ -211,11 +211,11 @@ Quan una aplicació vol llegir el fitxer **bar.txt** es comunica amb el NameNode
 - La forma més simple és usant la distribució de **Cloudera** que inclou *Apache Hadoop CDH*.
 
 ##9. Serveis funcionant en el Clúster
-- **NameNode: ** manté METADATA del HDFS.
-- **NameNode Secundari: ** fa funcions de manteniment del NameNode. (No backup)
-- **DataNode: ** encarregat d'emmagatzemar els blocs de dades del HDFS.
-- **JobTracker: ** gestiona els treballs de MapReduce, distribueix tasques individuals.
-- **TaskTracker: ** responsable d'instanciar i monitoritzar tasques de Map i Reduce individuals.
+- **NameNode:** manté METADATA del HDFS.
+- **NameNode Secundari:** fa funcions de manteniment del NameNode. (No backup)
+- **DataNode:** encarregat d'emmagatzemar els blocs de dades del HDFS.
+- **JobTracker:** gestiona els treballs de MapReduce, distribueix tasques individuals.
+- **TaskTracker:** responsable d'instanciar i monitoritzar tasques de Map i Reduce individuals.
 
 ![alt text][logo]
 [logo]: http://cfile25.uf.tistory.com/image/1762633B4F571A051B3CE3
