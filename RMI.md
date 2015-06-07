@@ -217,6 +217,190 @@ public class DateClient {
 - El significat d'alguns métodes definits en java.lang.Object s'especialitzen en el cas d'objectes remots.
 - Una invocació remota pot fallar per raons adicionals a les que ho fa una invocació local. S'han de tractar excepcions adicionals.
 
+- **Invocació local**
+```java
+public class Cliente {}
+public class IdentificadorCliente {}
+public Cliente obtenerCliente(IdentificadorCliente id);
+```
+*S'envia una referència local i es rep una referència local*
+- **Invocació remota amb paràmetre local i retorn remot**
+```java
+public Interficie ICliente extends Remote {}
+public class Cliente implements ICliente {}
+public class IdentificadorCliente implements Serializable {}
+public ICliente obtenerCliente (IIdentificadorCliente id) throws RemoteException;
+```
+*S'envia una còpia de l'objecte **id** i es rep una referència remota.*
+
+- **Invocació remota amb paràmetre remot i retorn remot**
+```java
+public Interficie ICliente extends Remote {}
+public Interficie IIdentificadorCliente extends Remote {}
+public class Cliente implements ICliente {}
+public class IdentificadorCliente implements IIdentificadorCliente {}
+public ICliente obtenerCliente (IdentificadorCliente id) throws RemoteException;
+```
+*S'envia una referència remota **id** i es rep una referència remota d'**idCliente**.*
+
+
+##4. RMI Avançat
+###4.1 Més enllà del C/S
+En el model Client-Servidor, el servidor és passiu: el client inicia l'IPC, el servidor espera l'arribada de les sol·licituds i proporciona respostes. Però algunes aplicacions requereixen que el servidor iniciï la comunicació en determinades incidències **Callback**. Exemples:
+- Monitorització.
+- Jocs.
+- Subhastes.
+- Votacions/Enquestes.
+- Sales de xat.
+- Tauler d'anuncis/Servei de missatges.
+- Treball en grup.
+
+###4.2 Polling vs Callback.
+Si no hi ha callback, en cas de que el client hagi de ser notificat sobre un esdeveniment asíncron que ha ocorregut en el costat del servidor, el client l'hauria de sondejar (*polling*) diverses vegades.
+
+###4.3 Comunicació ambdos sentits
+Algunes aplicacions requereixen que les dues parts puguin iniciar l'IPC. Utilitzant sockets, una comunicació dúplex es pot aconseguir mitjançant l'ús de dos sockets a cada costat. Amb sockets orientats a connexió, cada part actua com a client i servidor.
+
+###4.4 RMI Callbacks
+Elements necessaris per realitzar el callback:
+- Un client amb Callback es registra a un servidor RMI.
+- El servidor fa callbacks a cada client registrat davant l'ocurrència d'un esdeveniment determinat.
+
+###4.5 Interfícies RMI Callbacks
+- El servidor proporciona un mètode remot que permet a un client que es registri 	per a fer-li callback.
+- Es necessita una interfície remota pel callback a la banda del client, a més de la interfície de l'objecte remot del costat del servidor.
+- Aquesta interfície especifica un mètode per rebre un callback des del servidor.
+- El programa client és una subclasse de RemoteObject i implementa la interfícien de callback, incloent el mètode per rebre'l.
+- El client abans de res, s'ha de registrar al servidor per rebre un callback.
+- El servidor invoca el métode remot del client en cas de produir-se l'esdeveniment esperat.
+
+###4.6 Estructura aplicació distribuïda RMI amb callbacks
+**Client:**
+- Interfície Callback client
+- Implementació Interfície Callback client
+- Aplicació client
+
+**Servidor:**
+- Interfície Callback servidor
+- Implementació Interfície Callback servidor
+- Aplicació servidor
+- RMIRegistry
+
+###4.7 Interfície Callback Servidor
+```java
+public interface CallbackServerInterface extends Remote {
+	public void registerForCallback(CallbackClientInterface callbackClientObject) throws RemoteException;
+    public void unregisterForCallback(CallbackClientInterface callbackClientObject) throws RemoteException;
+}
+```
+
+###4.8 Implementació Interfície Callback Servidor
+```java
+public synchronized void registerForCallback(CallbackClientInterface callbackClientObject) throws RemoteException {
+	if(!(clientList.contains(callbackClientObject))) {
+    	clientList.add(callbackClientObject);
+        System.out.println("Registered new client");
+    }
+}
+
+public synchronized void unregisterForCallback(CallbackClientInterface callbackClientObject) throws RemoteException {
+	if(!(clientList.removeElement(callbackClientObject))) {
+        System.out.println("Unregistered client");
+    }else{
+    	System.out.println("Client wasn't registered");
+    }
+}
+```
+###4.9 Aplicació Callback Servidor
+```java
+public static void main(String args[]) {
+	startRegistry(RMIportNum);
+    CallbackServerImpl exportedObj = new CallbackServerImpl();
+    registryURL = "rmi://localhost:" + portNum + "/callback";
+    Naming.rebind(registryURL, exportedObj);
+    System.out.println("Callback server ready");
+}
+```
+
+###4.10 Interfície Callback Client
+```java
+public interface CallbackClientInterface extends Remote {
+	public String notifyMe(String message) throws RemoteException;
+}
+```
+
+###4.11 Implementació Interfície Callback Client
+```java
+public class CallbackClientImpl extends UnicastRemoteObject implements CallbackClientInterface {
+	public CallbackClientImpl() throws RemoteException {
+    	super();
+    }
+    public String notifyMe(String message){
+    	String returnMessage = "Call back received" + message;
+        System.out.println(returnMessage);
+        return returnMessage;
+    }
+}
+```
+
+###4.12 Aplicació Callback Client
+```java
+public static void main(String args[]) {
+	String URL = "rmi://localhost:" + portNum + "/callback" ;
+    CallbackServerInterface h = (CallbackServerInterface)Naming.lookup(registryURL);
+	System.out.println("Lookup Completed");
+    System.out.println("Server said " + h.sayHello());
+    CallbackClientInterface callbackObj = new CallbackClientImpl();
+    h.registerForCallback(callbackObj);
+    System.out.println("Registered for callback");
+}
+```
+
+###4.13 Objectes Remots amb múltiples interfícies
+Un mateix objecte remot pot donar serveis a diferents tipus de clients. Si totes les funcionalitats que dóna es troben en una única Interfície Remota, qualsevol client pot invocar mètodes que no li pertocarien.
+
+**Exemple:**
+>Aplicació de gestió de notes per alumnes i professors.
+
+**Problema**
+>Com fem que professors puguin modificar notes però els alumnes no?
+
+**Solució**
+>Objecte remot que implementa dos interfícies: una per l'alumne i una altre pel professor. Cadascuna amb els métodes corresponents.
+
+###4.14 RMI i Threads
+- Les crides a métodes remotes poden esdevenir en diferents threads en la banda de l'objecte remot.
+- Cal assegurar-se que tot el codi dintre dels métodes sigui thread-safe
+- Cal sincronitzar només les zones d'exclusió mútua (zones de dades compartides)
+- Cal anar en compte amb les collections de java, ja que no son thread-safe. Utilitzeu les collections que hi ha a **java.utils.concurrent**
+
+###4.15 Broadcast en RMI
+Enviar un missatge a tots els usuaris registrats:
+```java
+for(IClient client: registredClients)
+	client.notifyResult("OK");
+```
+**Problemes:**
+- No és just (s'envia de forma seqüèncial).
+- No és robust (si un client cau o no respon, els demés es veuen afectats).
+
+**Solució:**
+- Aproximació Multi-thread
+```java
+for(IClient client: registredClients)
+	new ClientNotifyThread(client, "OK").start();
+```
+
+###4.16 P2P fent servir RMI
+No existeix diferència entre rols, cada peer és igual que els demés.
+- Cada peer pot comunicar-se amb qualsevol peer, sense necessitat d'un server.
+- Cada peer ha de poder localitzar els demés peers.
+	- Una **taula hash distribuïda** és necessària per tenir totalment descentralitzada la localització dels peers.
+	- Cada peer pot mantenir una part de la taula hash actualitzada amb els seus peers propers.
+- Ens hem d'assegurar que el peer es realment qui diu ser.
+	- En registrar-se al servidor, aquest li ha de proporcionar una clau i el peer presentar-la a cada iteració.
+	- En cas de comunicació entre peers, s'ha de presentar una clau pública tipus RSA i verificar en el servidor que la referència remota és realment del mateix usuari que es va registrar.
+
 
 ## Stubs & Skeletons
 Recull les crides locals de mètodes remots i gestiona el seu enviament a l'objecte remot. Gestiona també la recepció per part de l'objecte remot de la crida al mètode i retorn de l'informació.
