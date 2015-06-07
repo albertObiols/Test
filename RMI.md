@@ -39,6 +39,7 @@ Per sol·licitar un servei d'un recurs de la xarxa, un procés invoca algun dels
 
 ###2.1 En quins aspectes ens ajuda Java RMI
 En la majoria d'aplicacions apareixen 5 aspectes a codificar:
+
 1. Lògica de l'aplicació.
 2. Interfície d'usuari.
 3. Preparació de dades per a l'enviament a altres processos.
@@ -50,10 +51,10 @@ RMI ens ajuda en la generació automàtica de la part 3 i 4.
 ###2.2 Conceptes fonamentals RMI
 - **Objecte Remot:** objecte que té algun métode el qual podem invocar des d'un altre procés corrent en una màquina remota.
 - **Objecte Local:** objecte que només pot ser invocat per un procés local.
-- **Servidor d'objectes: ** la màquina virtual té instanciats els objectes remots.
-- **Interfície Remota: ** interfície que declara els métodes d'un objecte remot.
-- **Invocació de métode remot: ** acció d'invocar un métode d'una interfície en un objecte remot.
-- **RMIregistry: ** servidor de noms o registre d'objectes remots. Permet localitzar objectes remots a partir del seu nom.
+- **Servidor d'objectes:** la màquina virtual té instanciats els objectes remots.
+- **Interfície Remota:** interfície que declara els métodes d'un objecte remot.
+- **Invocació de métode remot:** acció d'invocar un métode d'una interfície en un objecte remot.
+- **RMIregistry:** servidor de noms o registre d'objectes remots. Permet localitzar objectes remots a partir del seu nom.
 
 ##3. Utilitzant objectes remots
 - Per utilitzar un objecte remot, hem de saber com:
