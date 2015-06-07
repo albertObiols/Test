@@ -155,6 +155,69 @@ public class Server{
     }
 }
 ```
+- Quan un servidor d'objectes s'executa, l'exportació d'objecte distribuït fa que el procés del servidor comenci a escoltar i esperi que els clients es connectin i sol·licitin el servei d'objecte.
+- Un servidor d'objectes RMI és un servidor concurrent: cada sol·licitud d'un client a un dels métodes es pot fer en un fil separat. S'ha de tenir en compte que si un client crida a diversos métodes, aquestes crides podrien executar-se simultàniament. Igualment en el servidor cal tenir en compte que diferents clients poden estar executant el mateix servei i caldrà posar sistemes de sincronització allà on calgui.
+
+
+###3.11 Aplicació del costat del client
+L'aplicació client és com qualsevol altra classe de Java. La sintaxi RMI necessària fa referència a:
+- Localitzar el registre RMI del servidor.
+- Buscar la referència remota de l'objecte remot.
+- Convertir a la classe d'interfície remota i invocar els seus métodes remots.
+
+```java
+public class DateClient {
+	public static void main(Strinng [] args) {
+    	if(args.length != 1) {
+        	throw new IlleglArgumentException("Syntax: DateClient <hostname:port>");
+        }
+        DateServer dateServer = () Naming.lookup("rmi://" + args[0] + "/DateServer");
+        Date when = dateServer.getDate();
+        System.out.println(when);
+    }
+}
+```
+- La referència de la interfície remota s'ha d'utilitzar per invocar qualsevol dels métodes remots.
+- La sintaxi d'invocació dels métodes remots és la mateixa que en els locals.
+- **ALERTA!** és un error comú convertir la referència obtinguda des del registre de la classe a la classe d'implementació de la interfície en comptes de la classe d'interfície.
+
+###3.12 Passos per crear una aplicació RMI client/servidor
+**En l'aplicació del client**
+- Interfícies d'Objectes Remots.
+- Codi Aplicació Client.
+	- Main.
+	- GUI.
+	- Crides a métodes remots.
+
+**En l'aplicació del servidor**
+- Interfícies d'Objectes Remots.
+- Implementacions d'Objectes Remots.
+- Codi Aplicació Servidor.
+	- Main.
+	- Instanciació d'objectes Remots.
+	- *(Engegar RMIRegistry des de l'aplicació)
+	- Publicitar Objectes Remots al servidor de directori.
+
+###3.13 Passos per arrencar una aplicació RMI client/servidor
+**En la màquina servidor.**
+- *(Engegar rmiregistry).
+- Executar l'aplicació del servidor.
+
+**En les màquines clients.**
+- Executar l'aplicació del client.
+
+**ALERTA!** Cal vigilar que el rmiregistry estigui executant-se en el mateix path que el servidor, en cas contrari cal tenir-ho en compte quan especifiqueu la URL rmi://...
+
+**ALERT!** Les interfícies dels objectes remots a client i a servidor han de ser exactament iguals, vigileu si feu servir packages.
+
+###3.14 Diferències entre invocació local i remota.
+- El clients d'objectes remots sempre interactuen  amb interfícies remotes, mai amb les classes d'implementació.
+- Els arguments no-remots, i els resultats retornats són passats per còpia enlloc de per referència. Es necessari que implementin **Serializable**.
+- Els objectes remots es pasen sempre per referència, no copiant les implementacions remotes.
+- El significat d'alguns métodes definits en java.lang.Object s'especialitzen en el cas d'objectes remots.
+- Una invocació remota pot fallar per raons adicionals a les que ho fa una invocació local. S'han de tractar excepcions adicionals.
+
+
 ## Stubs & Skeletons
 Recull les crides locals de mètodes remots i gestiona el seu enviament a l'objecte remot. Gestiona també la recepció per part de l'objecte remot de la crida al mètode i retorn de l'informació.
 
