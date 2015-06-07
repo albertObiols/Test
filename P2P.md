@@ -27,7 +27,7 @@ Els nodes s'han de coordinar amb uns pocs altres del sistema de l'ordre de **log
 	- **Funció Hash Consistent:** té la propietat de que al afegir o esborrar un node tan sols canvia el conjunt de claus dels nodes veïns, deixant la resta sense alterar.
 	- Es defineix una funció de distància entre claus (res a veure amb distància geogràfica o latència).
 
-- **Xarxa superposada (overlay network): ** és com els nodes es connecten entre ells formant una xarxa que els permet trobar el propietari d'una clau concreta en l'espai de claus.
+- **Xarxa superposada (overlay network):**  és com els nodes es connecten entre ells formant una xarxa que els permet trobar el propietari d'una clau concreta en l'espai de claus.
 	- Cada node manté un conjunt d'enllaços a nodes veïns o taules d'enrutament.
 	- El veinatge dels nodes està definit segons la topologia de la xarxa
 	- L'algoritme per trobar nodes veins **Nearest Neighbour**
