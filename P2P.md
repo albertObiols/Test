@@ -25,6 +25,7 @@ Els nodes s'han de coordinar amb uns pocs altres del sistema de l'ordre de **log
 ###3.2 Estructura
 - **Esquema de partició d'espai de claus:** s'otorga a cada node un rang de claus contigu.
 	- **Funció Hash Consistent:** té la propietat de que al afegir o esborrar un node tan sols canvia el conjunt de claus dels nodes veïns, deixant la resta sense alterar.
+	> Wikipedia: és un tipus especial de hashing tal que quan es redimensiona la taula hash sols K/n claus necessiten ser remappejades, on K és el nombre de claus i n el nombre d'slots.
 	- Es defineix una funció de distància entre claus (res a veure amb distància geogràfica o latència).
 
 - **Xarxa superposada (overlay network):**  és com els nodes es connecten entre ells formant una xarxa que els permet trobar el propietari d'una clau concreta en l'espai de claus.
