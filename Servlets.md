@@ -10,6 +10,7 @@ Características de un JAVA SERVLET:
 	- JSP
 	- JSF
 	- Web Services
+  
 ![alt text][logo]
 [logo]: http://tutorials.jenkov.com/images/java-servlets/overview-2.png
 
@@ -342,9 +343,7 @@ El código de arriba obtiene el objeto RequestDispatcher mapeado en la URL anoth
 Llamando al método forward o include el servlet container activa el servlet mapeado a la url del RequestDispatcher
 ```java
 requestDispatcher.forward(request, response);
-```
-```java
-requestDispatcher.include(request, response)
+requestDispatcher.include(request, response);
 ```
 
 ##9. ServletContext
@@ -499,6 +498,7 @@ Las cookies normalmente son usadas para guardar información específica que no 
 Un **Servlet Container/WebServer** és por defecto multithread. Esto significa que múltiples requests al mismo servlet podrian ser ejecutadas al mismo tiempo. Así pues deberemos tenerlo en cuenta en el momento de implementar nuestro servlet.
 
 Para asegurarnos que nuestro servlet es **thread-safe** debemos seguir estas reglas:
+
 1. En el **service()**, no acceder a variables de clase a no ser que sean **thread-safe**.
 2. En el **service()**, no reassignar variables de clase. En caso de que lo necesitemos hacerlo dentro de un bloque **synchronize**.
 3. Aplicar la regla **1** y **2** para las variables **estáticas**.
