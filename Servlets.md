@@ -41,6 +41,7 @@ Se ejecutan normalmente dentro de Java Web Servers como:
 
 ##2. Servlet Life Cycle
 La ejecución de un servlet esta gestionada por el Servlet Container:
+
 1. Load Servlet Class
 2. Create Servlet Instance
 3. Se llama al método **init()**
