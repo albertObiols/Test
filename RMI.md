@@ -225,14 +225,15 @@ public class IdentificadorCliente {}
 public Cliente obtenerCliente(IdentificadorCliente id);
 ```
 *S'envia una referència local i es rep una referència local*
+
 - **Invocació remota amb paràmetre local i retorn remot**
 ```java
 public Interficie ICliente extends Remote {}
 public class Cliente implements ICliente {}
 public class IdentificadorCliente implements Serializable {}
-public ICliente obtenerCliente (IIdentificadorCliente id) throws RemoteException;
+public ICliente obtenerCliente (IdentificadorCliente id) throws RemoteException;
 ```
-*S'envia una còpia de l'objecte **id** i es rep una referència remota.*
+*S'envia una còpia de l'objecte **id** i es rep una referència remota.
 
 - **Invocació remota amb paràmetre remot i retorn remot**
 ```java
