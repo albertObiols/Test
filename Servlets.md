@@ -10,7 +10,7 @@ Características de un JAVA SERVLET:
 	- JSP
 	- JSF
 	- Web Services
-  
+
 ![alt text][logo]
 [logo]: http://tutorials.jenkov.com/images/java-servlets/overview-2.png
 
@@ -585,6 +585,7 @@ Tipos de matching:
 - Matching para definir un servlet por defecto
 
 Algoritmo de mapeo:
+
 1. Si existe un matching exacto entre el path solicitado y el servlet, se envia la petición al servlet.
 2. Se intenta encontrar de forma recursiva, el mayor prefijo que haga matching y se envia la petición al servlet.
 3. Si el último segmento del URL contiene una extensión, se busca un servlet que gestione esa extensión.
